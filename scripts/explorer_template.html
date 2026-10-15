@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credit risk explorer</title>
+<style>
+:root {
+  --bg: #f7f7f5; --card: #ffffff; --ink: #1c1f23; --muted: #5b6370; --line: #d9dce1;
+  --blue: #0072B2; --orange: #E69F00; --green: #009E73; --red: #D55E00; --grey: #8a919c;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #14171b; --card: #1d2127; --ink: #eceef1; --muted: #a4abb6; --line: #343a43;
+          --blue: #56B4E9; --orange: #F0B93A; --green: #3fc79d; --red: #F08A4B; --grey: #8a919c; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1040px; margin: 0 auto; padding: 20px 16px 48px; }
+h1 { font-size: 1.5rem; margin: 0 0 4px; }
+h2 { font-size: 1.1rem; margin: 0 0 8px; }
+p.lead { color: var(--muted); margin: 0 0 12px; }
+.notice { border-left: 4px solid var(--orange); background: var(--card); padding: 8px 12px; margin: 12px 0 20px;
+  border-radius: 4px; font-size: .9rem; }
+section { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 18px; }
+table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+th, td { text-align: right; padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; white-space: normal; }
+th { color: var(--muted); font-weight: 600; }
+tr.sel td { background: color-mix(in srgb, var(--blue) 12%, transparent); }
+.scroll { overflow-x: auto; }
+svg { width: 100%; height: auto; display: block; }
+svg text { fill: var(--ink); font-size: 11px; }
+svg .muted { fill: var(--muted); }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 12px; }
+label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: 2px; }
+label b { color: var(--ink); }
+input[type=range], select { width: 100%; }
+select { padding: 6px; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 4px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+.kpi { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+.kpi .v { font-size: 1.25rem; font-weight: 650; }
+.kpi .l { font-size: .75rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: .8rem; color: var(--muted); margin-top: 6px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+small { color: var(--muted); }
+button { background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 5px 10px; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Credit risk explorer</h1>
+  <p class="lead">German Credit data (1,000 applications, 1994). Everything on this page is precomputed by the repository's
+  <code>train</code> and <code>evaluate</code> runs and read from <code>results/explorer_data.json</code>; nothing is fitted in the browser.</p>
+  <div class="notice">Research demo on small, old data. Not for real lending decisions.</div>
+
+  <section id="compare">
+    <h2>Model comparison</h2>
+    <p class="lead" id="compare-note"></p>
+    <div class="scroll"><table id="cmp-table"></table></div>
+    <div id="cmp-chart" role="img" aria-label="Test AUC with 95 percent bootstrap intervals for each model"></div>
+  </section>
+
+  <section id="importance">
+    <h2>Feature importance (SHAP, XGBoost)</h2>
+    <p class="lead">Mean absolute SHAP value per original feature on the test split, in log-odds of bad credit. One-hot columns are summed back to their source feature.</p>
+    <div id="imp-chart" role="img" aria-label="Bar chart of mean absolute SHAP value per feature"></div>
+  </section>
+
+  <section id="threshold">
+    <h2>Threshold and cost</h2>
+    <p class="lead">An applicant is approved when the predicted probability of bad credit is below the threshold. Cost per applicant uses the test split's
+    predicted probabilities and true labels for the model you pick.</p>
+    <div class="controls">
+      <div><label for="model-select">Model</label><select id="model-select"></select></div>
+      <div><label for="thr">Threshold: <b id="thr-val"></b></label><input id="thr" type="range" min="0" max="1" step="0.005" value="0.17"></div>
+      <div><label for="cfa">Cost of approving a bad applicant: <b id="cfa-val"></b> (rejecting a good one costs 1)</label>
+        <input id="cfa" type="range" min="1" max="20" step="1" value="5"></div>
+    </div>
+    <div style="margin-bottom:8px">
+      <button id="btn-theo" type="button">Set to cost-optimal for calibrated probabilities</button>
+      <button id="btn-oof" type="button">Set to out-of-fold optimum (5:1)</button>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div id="cost-chart" role="img" aria-label="Mean cost per applicant against threshold"></div>
+    <div class="legend"><span><i style="background:var(--blue)"></i>model cost curve</span><span><i style="background:var(--grey)"></i>approve everyone / reject everyone</span><span><i style="background:var(--orange)"></i>selected threshold</span></div>
+    <p><small id="thr-note"></small></p>
+  </section>
+</main>
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (id) => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const f3 = (x) => (x == null ? "n/a" : x.toFixed(3));
+const ci = (o) => `${f3(o.value)} [${f3(o.lo)}, ${f3(o.hi)}]`;
+
+function el(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+/* ---------- model comparison ---------- */
+function renderCompare() {
+  const m = DATA.meta;
+  $("compare-note").textContent =
+    `Test split: ${m.n_test} applicants. Intervals are 95% stratified bootstrap percentiles. ` +
+    `Selected by nested-CV log loss (not by test): ${m.selected_label}.`;
+  const rows = DATA.models.slice();
+  let html = "<thead><tr><th>Model</th><th>Nested-CV AUC</th><th>Test AUC</th><th>Log loss</th><th>Brier</th><th>ECE</th><th>Cost at 1/6</th></tr></thead><tbody>";
+  for (const r of rows) {
+    html += `<tr class="${r.key === m.selected ? "sel" : ""}"><td>${r.label}</td>` +
+      `<td>${f3(r.cv.auc.mean)} &plusmn; ${f3(r.cv.auc.sd)}</td><td>${ci(r.test.auc)}</td><td>${f3(r.test.logloss.value)}</td>` +
+      `<td>${f3(r.test.brier.value)}</td><td>${f3(r.test.ece.value)}</td><td>${f3(r.cost_at_theoretical.value)}</td></tr>`;
+  }
+  $("cmp-table").innerHTML = html + "</tbody>";
+
+  const W = 640, rowH = 22, padL = 230, padR = 20, top = 8;
+  const H = top + rows.length * rowH + 28;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}` });
+  const lo = Math.min(0.45, ...rows.map((r) => r.test.auc.lo)) - 0.02, hi = Math.max(...rows.map((r) => r.test.auc.hi)) + 0.02;
+  const x = (v) => padL + ((v - lo) / (hi - lo)) * (W - padL - padR);
+  for (let t = Math.ceil(lo * 20) / 20; t <= hi; t += 0.05) {
+    el("line", { x1: x(t), x2: x(t), y1: top, y2: H - 22, stroke: css("--line") }, svg);
+    el("text", { x: x(t), y: H - 8, "text-anchor": "middle", class: "muted" }, svg, t.toFixed(2));
+  }
+  rows.forEach((r, i) => {
+    const y = top + i * rowH + rowH / 2;
+    el("text", { x: padL - 8, y: y + 4, "text-anchor": "end" }, svg, r.label);
+    el("line", { x1: x(r.test.auc.lo), x2: x(r.test.auc.hi), y1: y, y2: y, stroke: css("--blue"), "stroke-width": 2 }, svg);
+    el("circle", { cx: x(r.test.auc.value), cy: y, r: 4, fill: css("--blue") }, svg);
+    el("rect", { x: x(r.cv.auc.mean) - 3.5, y: y - 3.5, width: 7, height: 7, fill: css("--orange"), transform: `rotate(45 ${x(r.cv.auc.mean)} ${y})` }, svg);
+  });
+  $("cmp-chart").replaceChildren(svg);
+  const lg = document.createElement("div");
+  lg.className = "legend";
+  lg.innerHTML = '<span><i style="background:var(--blue)"></i>test AUC with 95% interval</span><span><i style="background:var(--orange)"></i>nested-CV mean AUC</span>';
+  $("cmp-chart").appendChild(lg);
+}
+
+/* ---------- importance ---------- */
+function renderImportance() {
+  const items = DATA.importance.slice(0, 12);
+  const W = 640, rowH = 22, padL = 170, padR = 50, top = 6, H = top + items.length * rowH + 22;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}` });
+  const max = Math.max(...items.map((i) => i.mean_abs_shap));
+  const x = (v) => padL + (v / max) * (W - padL - padR);
+  items.forEach((it, i) => {
+    const y = top + i * rowH;
+    el("text", { x: padL - 8, y: y + 15, "text-anchor": "end" }, svg, it.feature);
+    el("rect", { x: padL, y: y + 3, width: Math.max(1, x(it.mean_abs_shap) - padL), height: rowH - 8, fill: css("--blue"), rx: 2 }, svg);
+    el("text", { x: x(it.mean_abs_shap) + 5, y: y + 15, class: "muted" }, svg, it.mean_abs_shap.toFixed(3));
+  });
+  el("text", { x: padL, y: H - 4, class: "muted" }, svg, "mean |SHAP| (log-odds of bad credit)");
+  $("imp-chart").replaceChildren(svg);
+}
+
+/* ---------- threshold and cost ---------- */
+const T = { y: null };
+function stats(p, thr, cfa) {
+  let fa = 0, fr = 0, ta = 0, tr = 0, bad = 0;
+  for (let i = 0; i < p.length; i++) {
+    const approve = p[i] < thr, isBad = T.y[i] === 1;
+    if (isBad) bad++;
+    if (approve && isBad) fa++; else if (!approve && !isBad) fr++; else if (approve) ta++; else tr++;
+  }
+  const n = p.length;
+  return { fa, fr, ta, tr, n, bad, approved: fa + ta, cost: (cfa * fa + fr) / n,
+           approveAll: (cfa * bad) / n, rejectAll: (n - bad) / n };
+}
+function renderThreshold() {
+  const key = $("model-select").value, p = DATA.threshold_data.p[key];
+  const thr = parseFloat($("thr").value), cfa = parseFloat($("cfa").value);
+  $("thr-val").textContent = thr.toFixed(3);
+  $("cfa-val").textContent = cfa;
+  const s = stats(p, thr, cfa);
+  const k = [
+    [s.cost.toFixed(3), "mean cost per applicant"],
+    [`${s.approved} of ${s.n}`, "approved"],
+    [s.fa, "bad applicants approved (cost " + cfa + " each)"],
+    [s.fr, "good applicants rejected (cost 1 each)"],
+    [s.approveAll.toFixed(3), "cost if everyone is approved"],
+    [s.rejectAll.toFixed(3), "cost if everyone is rejected"],
+  ];
+  $("kpis").innerHTML = k.map(([v, l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+
+  const W = 640, H = 240, L = 44, R = 14, Tp = 12, B = 34;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}` });
+  const grid = [], costs = [];
+  for (let t = 0; t <= 1.0001; t += 0.005) { grid.push(t); costs.push(stats(p, t, cfa).cost); }
+  const ymax = Math.max(...costs, s.approveAll, s.rejectAll) * 1.08;
+  const x = (v) => L + v * (W - L - R), y = (v) => Tp + (1 - v / ymax) * (H - Tp - B);
+  for (let i = 0; i <= 4; i++) {
+    const v = (ymax * i) / 4;
+    el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: css("--line") }, svg);
+    el("text", { x: L - 6, y: y(v) + 4, "text-anchor": "end", class: "muted" }, svg, v.toFixed(2));
+  }
+  for (let t = 0; t <= 1.0001; t += 0.1) el("text", { x: x(t), y: H - 16, "text-anchor": "middle", class: "muted" }, svg, t.toFixed(1));
+  el("text", { x: (L + W - R) / 2, y: H - 2, "text-anchor": "middle", class: "muted" }, svg, "threshold (approve if P(bad) < threshold)");
+  for (const [v, name] of [[s.approveAll, "approve all"], [s.rejectAll, "reject all"]]) {
+    el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: css("--grey"), "stroke-dasharray": "4 3" }, svg);
+    el("text", { x: W - R - 2, y: y(v) - 3, "text-anchor": "end", class: "muted" }, svg, name);
+  }
+  el("polyline", { points: grid.map((t, i) => `${x(t)},${y(costs[i])}`).join(" "), fill: "none", stroke: css("--blue"), "stroke-width": 2 }, svg);
+  el("line", { x1: x(thr), x2: x(thr), y1: Tp, y2: H - B, stroke: css("--orange"), "stroke-width": 2 }, svg);
+  el("circle", { cx: x(thr), cy: y(s.cost), r: 5, fill: css("--orange") }, svg);
+  $("cost-chart").replaceChildren(svg);
+
+  const best = grid[costs.indexOf(Math.min(...costs))];
+  const theo = 1 / (cfa + 1);
+  $("thr-note").textContent =
+    `With these costs, perfectly calibrated probabilities would be best cut at 1/(${cfa}+1) = ${theo.toFixed(3)}. ` +
+    `On this test split the lowest-cost threshold for this model is ${best.toFixed(3)}; with only ${s.n} applicants (${s.bad} bad) the curve is noisy, ` +
+    `so treat that as illustration, not a recommendation.`;
+}
+function init() {
+  const sel = $("model-select");
+  DATA.models.forEach((m) => {
+    if (DATA.threshold_data.p[m.key]) sel.add(new Option(m.label, m.key));
+  });
+  sel.value = DATA.meta.selected;
+  $("thr").value = DATA.meta.oof_threshold[DATA.meta.selected].toFixed(3);
+  T.y = DATA.threshold_data.y;
+  sel.addEventListener("change", () => {
+    $("thr").value = DATA.meta.oof_threshold[sel.value].toFixed(3);
+    renderThreshold();
+  });
+  $("thr").addEventListener("input", renderThreshold);
+  $("cfa").addEventListener("input", renderThreshold);
+  $("btn-theo").addEventListener("click", () => { $("thr").value = (1 / (parseFloat($("cfa").value) + 1)).toFixed(3); renderThreshold(); });
+  $("btn-oof").addEventListener("click", () => { $("thr").value = DATA.meta.oof_threshold[sel.value].toFixed(3); $("cfa").value = 5; renderThreshold(); });
+  renderCompare(); renderImportance(); renderThreshold();
+}
+init();
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { renderCompare(); renderImportance(); renderThreshold(); });
+</script>
+</body>
+</html>

@@ -48,6 +48,7 @@ def build_parser() -> argparse.ArgumentParser:
     e = sub.add_parser("evaluate", help="test metrics, thresholds, fairness, SHAP, figures")
     _common(e)
     e.add_argument("--bootstrap", type=int, default=2000)
+    e.add_argument("--jobs", type=int, default=4, help="parallel outer folds for the ablation")
     e.add_argument("--no-ablation", action="store_true", help="skip the no-sensitive-features run")
 
     s = sub.add_parser("sweep", help="repeat tuning and test evaluation over several seeds")

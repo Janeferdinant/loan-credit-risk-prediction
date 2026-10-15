@@ -217,6 +217,8 @@ def _fairness_block(
 def run_evaluate(cfg: Config, ablation: bool = True) -> dict[str, Any]:
     t0 = time.time()
     meta = runinfo.load_json(cfg.artifacts / "meta.json")
+    for k in ("seed", "test_size", "trials", "splits", "repeats", "inner_splits"):
+        setattr(cfg, k, meta["config"][k])  # evaluate must reuse the protocol that train used
     nested = runinfo.load_json(cfg.results / "nested_cv.json")
     train_info = runinfo.load_json(cfg.results / "train_run.json")
     models = joblib.load(cfg.artifacts / "models.joblib")
