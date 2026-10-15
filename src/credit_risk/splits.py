@@ -6,9 +6,7 @@ import numpy as np
 from sklearn.model_selection import RepeatedStratifiedKFold, train_test_split
 
 
-def holdout_split(
-    y: np.ndarray, test_size: float = 0.2, seed: int = 42
-) -> tuple[np.ndarray, np.ndarray]:
+def holdout_split(y: np.ndarray, test_size: float = 0.2, seed: int = 42) -> tuple[np.ndarray, np.ndarray]:
     """Stratified train/test row positions."""
     idx = np.arange(len(y))
     train, test = train_test_split(idx, test_size=test_size, stratify=y, random_state=seed)

@@ -58,9 +58,7 @@ def test_age_boundary():
     import pandas as pd
 
     out = data.add_sensitive(
-        pd.DataFrame(
-            {"age": [24, 25], "personal_status": ["male: single", "female: single"], "bad": [0, 1]}
-        )
+        pd.DataFrame({"age": [24, 25], "personal_status": ["male: single", "female: single"], "bad": [0, 1]})
     )
     assert list(out["age_group"]) == ["<25", ">=25"]
 
@@ -105,9 +103,7 @@ def test_download_verifies_checksum_and_extracts(tmp_path, raw_text):
 def test_download_rejects_wrong_checksum(tmp_path, raw_text):
     payload = _zip_bytes(raw_text)
     with pytest.raises(data.ChecksumError):
-        data.download_german_credit(
-            tmp_path, url="http://x/y.zip", sha256="0" * 64, opener=lambda u: payload
-        )
+        data.download_german_credit(tmp_path, url="http://x/y.zip", sha256="0" * 64, opener=lambda u: payload)
     assert not (tmp_path / "german.data").exists()
     assert not (tmp_path / data.ARCHIVE_NAME).exists()
 

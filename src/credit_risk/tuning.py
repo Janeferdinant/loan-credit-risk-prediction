@@ -89,7 +89,13 @@ def _outer_fold(
             seed=fold_seed, n_trials=n_trials, inner_splits=inner_splits,
         )  # fmt: skip
         param_records.append(
-            {"repeat": repeat, "fold": fold, "model": name, "params": tuned.params, "inner_logloss": tuned.value}
+            {
+                "repeat": repeat,
+                "fold": fold,
+                "model": name,
+                "params": tuned.params,
+                "inner_logloss": tuned.value,
+            }
         )
         for cal in calibrations_for(name):
             est = make_estimator(name, numeric, categorical, tuned.params, fold_seed, cal)
@@ -137,7 +143,18 @@ def nested_cv(
     folds = outer_folds(y, n_splits, n_repeats, seed)
     jobs = [
         delayed(_outer_fold)(
-            r, k % n_splits, tr, te, X, y, numeric, categorical, model_names, n_trials, inner_splits, seed
+            r,
+            k % n_splits,
+            tr,
+            te,
+            X,
+            y,
+            numeric,
+            categorical,
+            model_names,
+            n_trials,
+            inner_splits,
+            seed,
         )
         for k, (r, tr, te) in enumerate(folds)
     ]

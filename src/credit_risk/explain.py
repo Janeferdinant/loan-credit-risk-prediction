@@ -24,9 +24,7 @@ def feature_owners(out_names: list[str], categorical: list[str]) -> list[str]:
     return owners
 
 
-def shap_by_feature(
-    fitted_pipeline, X: pd.DataFrame, categorical: list[str]
-) -> dict[str, Any]:
+def shap_by_feature(fitted_pipeline, X: pd.DataFrame, categorical: list[str]) -> dict[str, Any]:
     """SHAP values (log-odds of *bad*) of a fitted preprocessing + XGBoost pipeline, summed over
     one-hot columns so each original feature gets one value per row."""
     import shap

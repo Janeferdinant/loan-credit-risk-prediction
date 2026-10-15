@@ -65,7 +65,12 @@ def reliability_bins(y: np.ndarray, p: np.ndarray, n_bins: int = 10) -> list[dic
         m = bins == b
         if m.any():
             out.append(
-                {"bin": b, "n": int(m.sum()), "mean_pred": float(p[m].mean()), "observed": float(y[m].mean())}
+                {
+                    "bin": b,
+                    "n": int(m.sum()),
+                    "mean_pred": float(p[m].mean()),
+                    "observed": float(y[m].mean()),
+                }
             )
     return out
 
@@ -94,8 +99,7 @@ def expected_cost(
     false_approval = y & approve
     false_rejection = ~y & ~approve
     return float(
-        (cost_false_approval * false_approval.sum() + cost_false_rejection * false_rejection.sum())
-        / len(y)
+        (cost_false_approval * false_approval.sum() + cost_false_rejection * false_rejection.sum()) / len(y)
     )
 
 
@@ -116,10 +120,7 @@ def cost_curve(
 ) -> tuple[np.ndarray, np.ndarray]:
     grid = np.linspace(0, 1, 201) if grid is None else np.asarray(grid)
     costs = np.array(
-        [
-            expected_cost(y, decide_approve(p, t), cost_false_approval, cost_false_rejection)
-            for t in grid
-        ]
+        [expected_cost(y, decide_approve(p, t), cost_false_approval, cost_false_rejection) for t in grid]
     )
     return grid, costs
 

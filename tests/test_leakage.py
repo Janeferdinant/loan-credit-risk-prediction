@@ -34,7 +34,17 @@ def test_tuning_never_sees_outer_test_rows(xy, monkeypatch):
 
     monkeypatch.setattr(tuning, "tune_params", spy)
     res = tuning.nested_cv(
-        X, y, num, cat, ["logreg"], n_splits=3, n_repeats=1, n_trials=2, inner_splits=2, seed=0, n_jobs=1
+        X,
+        y,
+        num,
+        cat,
+        ["logreg"],
+        n_splits=3,
+        n_repeats=1,
+        n_trials=2,
+        inner_splits=2,
+        seed=0,
+        n_jobs=1,
     )
     folds = outer_folds(y, 3, 1, seed=0)
     assert len(seen) == len(folds)
@@ -46,7 +56,17 @@ def test_tuning_never_sees_outer_test_rows(xy, monkeypatch):
 def test_each_row_predicted_by_a_model_that_did_not_train_on_it(xy):
     X, y, num, cat = xy
     res = tuning.nested_cv(
-        X, y, num, cat, ["logreg"], n_splits=4, n_repeats=2, n_trials=2, inner_splits=2, seed=1, n_jobs=1
+        X,
+        y,
+        num,
+        cat,
+        ["logreg"],
+        n_splits=4,
+        n_repeats=2,
+        n_trials=2,
+        inner_splits=2,
+        seed=1,
+        n_jobs=1,
     )
     oof = res.oof[("logreg", "raw")]
     assert oof.shape == (2, len(y))
@@ -59,8 +79,17 @@ def test_label_permutation_gives_chance_level_auc(xy):
     rng = np.random.default_rng(0)
     y_perm = rng.permutation(y)
     res = tuning.nested_cv(
-        X, y_perm, num, cat, ["logreg", "hgb"], n_splits=5, n_repeats=1, n_trials=2,
-        inner_splits=2, seed=0, n_jobs=1,
+        X,
+        y_perm,
+        num,
+        cat,
+        ["logreg", "hgb"],
+        n_splits=5,
+        n_repeats=1,
+        n_trials=2,
+        inner_splits=2,
+        seed=0,
+        n_jobs=1,
     )
     for key in (("logreg", "raw"), ("hgb", "raw")):
         a = auc(y_perm, res.oof[key][0])
@@ -70,7 +99,17 @@ def test_label_permutation_gives_chance_level_auc(xy):
 def test_real_signal_survives_the_same_check(xy):
     X, y, num, cat = xy
     res = tuning.nested_cv(
-        X, y, num, cat, ["logreg"], n_splits=5, n_repeats=1, n_trials=2, inner_splits=2, seed=0, n_jobs=1
+        X,
+        y,
+        num,
+        cat,
+        ["logreg"],
+        n_splits=5,
+        n_repeats=1,
+        n_trials=2,
+        inner_splits=2,
+        seed=0,
+        n_jobs=1,
     )
     assert auc(y, res.oof[("logreg", "raw")][0]) > 0.62
 

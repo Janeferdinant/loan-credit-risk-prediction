@@ -27,7 +27,7 @@ def test_every_model_and_calibration_fits(xy, name, calibration):
     X, y, num, cat = xy
     est = make_estimator(name, num, cat, seed=0, calibration=calibration).fit(X, y)
     p = est.predict_proba(X)[:, 1]
-    assert p.shape == (len(X),) and 0 <= p.min() and p.max() <= 1
+    assert p.shape == (len(X),) and p.min() >= 0 and p.max() <= 1
 
 
 def test_models_beat_majority_on_training_signal(xy):

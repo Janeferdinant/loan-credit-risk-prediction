@@ -63,7 +63,12 @@ def reliability(curves: dict[str, list[dict[str, float]]], path: Path) -> None:
     ax.plot([0, 1], [0, 1], "--", color=GREY, lw=1, label="perfect")
     for (label, bins), colour in zip(curves.items(), [BLUE, ORANGE, GREEN, VERMILION, PURPLE], strict=False):
         ax.plot(
-            [b["mean_pred"] for b in bins], [b["observed"] for b in bins], "o-", ms=4, color=colour, label=label
+            [b["mean_pred"] for b in bins],
+            [b["observed"] for b in bins],
+            "o-",
+            ms=4,
+            color=colour,
+            label=label,
         )
     ax.set_xlabel("predicted P(bad)")
     ax.set_ylabel("observed share bad")

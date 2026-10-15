@@ -97,6 +97,8 @@ def select_variant(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 def run_train(cfg: Config) -> dict[str, Any]:
     t0 = time.time()
+    cfg.results.mkdir(parents=True, exist_ok=True)
+    cfg.artifacts.mkdir(parents=True, exist_ok=True)
     df = load_frame(cfg)
     numeric, categorical = select_features("all")
     X = df[numeric + categorical]
@@ -272,20 +274,20 @@ def run_evaluate(cfg: Config, ablation: bool = True) -> dict[str, Any]:
     thr_op = sel["oof_threshold"]
     p_sel = test_p[selected_key]
     all_p_oof = np.asarray(oof_by_repeat[selected_key]["p"])
-    grid, oof_curve = metrics.cost_curve(np.tile(ytr, all_p_oof.shape[0]), all_p_oof.ravel(), COST_FA, COST_FR)
+    grid, oof_curve = metrics.cost_curve(
+        np.tile(ytr, all_p_oof.shape[0]), all_p_oof.ravel(), COST_FA, COST_FR
+    )
     _, test_curve = metrics.cost_curve(yte, p_sel, COST_FA, COST_FR, grid)
     approve_all = metrics.approve_all_cost(yte, COST_FA, COST_FR)
     reject_all = metrics.reject_all_cost(yte, COST_FA, COST_FR)
     cost_op = lambda yy, pp: metrics.expected_cost(yy, metrics.decide_approve(pp, thr_op), COST_FA, COST_FR)  # noqa: E731
-    d_vs_reject = metrics.paired_bootstrap_diff(
-        yte, p_sel, p_sel,
-        lambda yy, pp: 0.0,
-        n_boot=2, seed=0,
-    )  # placeholder shape; real paired comparison computed below  # fmt: skip
-    del d_vs_reject
-    i = idx
-    diffs = np.array([cost_op(yte[j], p_sel[j]) - metrics.reject_all_cost(yte[j], COST_FA, COST_FR) for j in i])
-    diffs_all = np.array([cost_op(yte[j], p_sel[j]) - metrics.approve_all_cost(yte[j], COST_FA, COST_FR) for j in i])
+    # paired bootstrap: policy cost minus the trivial policies' cost on the same resamples
+    diffs = np.array(
+        [cost_op(yte[j], p_sel[j]) - metrics.reject_all_cost(yte[j], COST_FA, COST_FR) for j in idx]
+    )
+    diffs_all = np.array(
+        [cost_op(yte[j], p_sel[j]) - metrics.approve_all_cost(yte[j], COST_FA, COST_FR) for j in idx]
+    )
     threshold_block = {
         "selected": selected_key,
         "theoretical": theo,
@@ -346,9 +348,7 @@ def run_evaluate(cfg: Config, ablation: bool = True) -> dict[str, Any]:
             "model": selected_key,
             "features_dropped": ["personal_status", "age", "foreign_worker"],
             "auc_oof_all_features": float(np.mean([metrics.auc(ytr, r) for r in all_p_oof])),
-            "auc_oof_no_sensitive": float(
-                np.mean([metrics.auc(ytr, r) for r in res2.oof[(sel_name, cal)]])
-            ),
+            "auc_oof_no_sensitive": float(np.mean([metrics.auc(ytr, r) for r in res2.oof[(sel_name, cal)]])),
             "cost_oof_all_features": float(
                 metrics.expected_cost(ytr, metrics.decide_approve(oof_mean, thr_op), COST_FA, COST_FR)
             ),
@@ -377,10 +377,13 @@ def run_evaluate(cfg: Config, ablation: bool = True) -> dict[str, Any]:
     imp_test = explain.mean_abs_importance(sh["values"])
     sh_tr = explain.shap_by_feature(models["xgb|raw"], Xtr, categorical)
     imp_train = explain.mean_abs_importance(sh_tr["values"])
-    pdp_feats = [("duration_months", False), ("credit_amount", False), ("age", False), ("checking_status", True)]
-    pdps = [
-        explain.partial_dependence_1d(models["hgb|raw"], Xtr, f, c, seed=cfg.seed) for f, c in pdp_feats
+    pdp_feats = [
+        ("duration_months", False),
+        ("credit_amount", False),
+        ("age", False),
+        ("checking_status", True),
     ]
+    pdps = [explain.partial_dependence_1d(models["hgb|raw"], Xtr, f, c, seed=cfg.seed) for f, c in pdp_feats]
 
     # --- figures --------------------------------------------------------------------------------
     cmp_rows = []
@@ -412,9 +415,7 @@ def run_evaluate(cfg: Config, ablation: bool = True) -> dict[str, Any]:
     plots.shap_summary(sh["values"], Xte, cfg.img / "shap_summary.png")
     plots.shap_bar(imp_test, cfg.img / "shap_importance.png")
     plots.partial_dependence(pdps, cfg.img / "partial_dependence.png")
-    plots.fairness_bars(
-        {a: pd.DataFrame(fair_oof[a]["table"]) for a in fair_oof}, cfg.img / "fairness.png"
-    )
+    plots.fairness_bars({a: pd.DataFrame(fair_oof[a]["table"]) for a in fair_oof}, cfg.img / "fairness.png")
 
     # --- outputs --------------------------------------------------------------------------------
     cv_tbl = nested["summary"]
@@ -462,7 +463,7 @@ def run_evaluate(cfg: Config, ablation: bool = True) -> dict[str, Any]:
             "theoretical_threshold": theo,
             "selected": selected_key,
             "selected_label": label_of(*selected_key.split("|")),
-            "oof_threshold": {k: v for k, v in oof_thr.items()},
+            "oof_threshold": dict(oof_thr),
         },
         "models": [
             {
@@ -475,9 +476,7 @@ def run_evaluate(cfg: Config, ablation: bool = True) -> dict[str, Any]:
             }
             for r in table
         ],
-        "importance": [
-            {"feature": f, "mean_abs_shap": float(v)} for f, v in imp_test.items()
-        ],
+        "importance": [{"feature": f, "mean_abs_shap": float(v)} for f, v in imp_test.items()],
         "threshold_data": {
             "y": yte.tolist(),
             "p": {k: np.round(v, 4).tolist() for k, v in test_p.items() if not k.startswith("majority")},
