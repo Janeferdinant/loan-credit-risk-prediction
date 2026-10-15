@@ -214,7 +214,7 @@ python scripts/build_explorer.py                       # writes docs/index.html
 credit-risk sweep --jobs 8                             # optional: repeat everything for seeds 0-4
 ```
 
-Quick smoke setting (about 1 minute, rough numbers): `credit-risk train --trials 3 --splits 3 --repeats 1 --jobs 4`, then `credit-risk evaluate --bootstrap 200`.
+Quick smoke setting (about 1.5 minutes in total, rough numbers): `credit-risk train --trials 3 --splits 3 --repeats 1 --jobs 4`, then `credit-risk evaluate --bootstrap 200`.
 
 Score applicants with the trained model (example rows are made up):
 
