@@ -28,7 +28,7 @@ def environment() -> dict[str, Any]:
         "os": f"{platform.system()} {platform.release()}",
         "cpu": platform.processor() or platform.machine(),
         "cpu_count": os.cpu_count(),
-        "gpu": "none (CPU only)",
+        "gpu": "GPU: none (CPU only)",
         "packages": versions,
     }
 

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Credit risk explorer</title>
+<link rel="icon" href="data:,">
 <style>
 :root {
   --bg: #f7f7f5; --card: #ffffff; --ink: #1c1f23; --muted: #5b6370; --line: #d9dce1;
@@ -92,6 +93,8 @@ const DATA = /*__DATA__*/null;
 const $ = (id) => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const short = (l) => l.replace("HistGradientBoosting", "HistGB").replace("Logistic regression", "LogReg").replace(" calibration", "").replace("Majority class (prior)", "Majority class");
+const width = (id) => Math.max(300, Math.min(640, $(id).clientWidth || 640));
 const f3 = (x) => (x == null ? "n/a" : x.toFixed(3));
 const ci = (o) => `${f3(o.value)} [${f3(o.lo)}, ${f3(o.hi)}]`;
 
@@ -118,18 +121,18 @@ function renderCompare() {
   }
   $("cmp-table").innerHTML = html + "</tbody>";
 
-  const W = 640, rowH = 22, padL = 230, padR = 20, top = 8;
+  const W = width("cmp-chart"), rowH = 22, padL = W < 500 ? 130 : 190, padR = 16, top = 8;
   const H = top + rows.length * rowH + 28;
   const svg = el("svg", { viewBox: `0 0 ${W} ${H}` });
   const lo = Math.min(0.45, ...rows.map((r) => r.test.auc.lo)) - 0.02, hi = Math.max(...rows.map((r) => r.test.auc.hi)) + 0.02;
   const x = (v) => padL + ((v - lo) / (hi - lo)) * (W - padL - padR);
-  for (let t = Math.ceil(lo * 20) / 20; t <= hi; t += 0.05) {
+  for (let t = Math.ceil(lo * 10) / 10; t <= hi; t += 0.1) {
     el("line", { x1: x(t), x2: x(t), y1: top, y2: H - 22, stroke: css("--line") }, svg);
     el("text", { x: x(t), y: H - 8, "text-anchor": "middle", class: "muted" }, svg, t.toFixed(2));
   }
   rows.forEach((r, i) => {
     const y = top + i * rowH + rowH / 2;
-    el("text", { x: padL - 8, y: y + 4, "text-anchor": "end" }, svg, r.label);
+    el("text", { x: padL - 8, y: y + 4, "text-anchor": "end" }, svg, short(r.label));
     el("line", { x1: x(r.test.auc.lo), x2: x(r.test.auc.hi), y1: y, y2: y, stroke: css("--blue"), "stroke-width": 2 }, svg);
     el("circle", { cx: x(r.test.auc.value), cy: y, r: 4, fill: css("--blue") }, svg);
     el("rect", { x: x(r.cv.auc.mean) - 3.5, y: y - 3.5, width: 7, height: 7, fill: css("--orange"), transform: `rotate(45 ${x(r.cv.auc.mean)} ${y})` }, svg);
@@ -144,7 +147,7 @@ function renderCompare() {
 /* ---------- importance ---------- */
 function renderImportance() {
   const items = DATA.importance.slice(0, 12);
-  const W = 640, rowH = 22, padL = 170, padR = 50, top = 6, H = top + items.length * rowH + 22;
+  const W = width("imp-chart"), rowH = 22, padL = W < 500 ? 130 : 170, padR = 44, top = 6, H = top + items.length * rowH + 22;
   const svg = el("svg", { viewBox: `0 0 ${W} ${H}` });
   const max = Math.max(...items.map((i) => i.mean_abs_shap));
   const x = (v) => padL + (v / max) * (W - padL - padR);
@@ -187,7 +190,7 @@ function renderThreshold() {
   ];
   $("kpis").innerHTML = k.map(([v, l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
 
-  const W = 640, H = 240, L = 44, R = 14, Tp = 12, B = 34;
+  const W = width("cost-chart"), H = 240, L = 44, R = 14, Tp = 12, B = 34;
   const svg = el("svg", { viewBox: `0 0 ${W} ${H}` });
   const grid = [], costs = [];
   for (let t = 0; t <= 1.0001; t += 0.005) { grid.push(t); costs.push(stats(p, t, cfa).cost); }
@@ -235,7 +238,10 @@ function init() {
   renderCompare(); renderImportance(); renderThreshold();
 }
 init();
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { renderCompare(); renderImportance(); renderThreshold(); });
+const redraw = () => { renderCompare(); renderImportance(); renderThreshold(); };
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redraw);
+let lastW = window.innerWidth;
+window.addEventListener("resize", () => { if (window.innerWidth !== lastW) { lastW = window.innerWidth; redraw(); } });
 </script>
 </body>
 </html>
