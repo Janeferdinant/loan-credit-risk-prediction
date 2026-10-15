@@ -1,0 +1,480 @@
+{
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "trials": 20,
+ "env": {
+  "date": "2026-10-15",
+  "python": "3.11.9",
+  "os": "Windows 10",
+  "cpu": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+  "cpu_count": 16,
+  "gpu": "GPU: none (CPU only)",
+  "packages": {
+   "numpy": "2.4.6",
+   "pandas": "3.0.6",
+   "scikit-learn": "1.9.1",
+   "xgboost": "3.2.0",
+   "optuna": "5.0.0",
+   "shap": "0.51.0",
+   "matplotlib": "3.11.2"
+  }
+ },
+ "per_seed": [
+  {
+   "seed": 0,
+   "model": "majority",
+   "calibration": "raw",
+   "auc": 0.5,
+   "logloss": 0.6108643020548935,
+   "brier": 0.20999999999999996,
+   "ece": 5.551115123125783e-17,
+   "cost_at_theoretical": 0.7
+  },
+  {
+   "seed": 0,
+   "model": "logreg",
+   "calibration": "raw",
+   "auc": 0.7821428571428571,
+   "logloss": 0.4979022042261154,
+   "brier": 0.1646598978093846,
+   "ece": 0.05771153438956417,
+   "cost_at_theoretical": 0.565
+  },
+  {
+   "seed": 0,
+   "model": "logreg",
+   "calibration": "sigmoid",
+   "auc": 0.783452380952381,
+   "logloss": 0.4975194279287189,
+   "brier": 0.16434554963227796,
+   "ece": 0.045038878516230424,
+   "cost_at_theoretical": 0.57
+  },
+  {
+   "seed": 0,
+   "model": "hgb",
+   "calibration": "raw",
+   "auc": 0.7739285714285714,
+   "logloss": 0.5083792963469258,
+   "brier": 0.1695312747242671,
+   "ece": 0.049657724721596144,
+   "cost_at_theoretical": 0.555
+  },
+  {
+   "seed": 0,
+   "model": "hgb",
+   "calibration": "sigmoid",
+   "auc": 0.7835714285714286,
+   "logloss": 0.4977422390882991,
+   "brier": 0.16512244460203654,
+   "ece": 0.03671267563730545,
+   "cost_at_theoretical": 0.525
+  },
+  {
+   "seed": 0,
+   "model": "xgb",
+   "calibration": "raw",
+   "auc": 0.7860714285714286,
+   "logloss": 0.500124374444581,
+   "brier": 0.16661215145930305,
+   "ece": 0.060028802300803354,
+   "cost_at_theoretical": 0.55
+  },
+  {
+   "seed": 0,
+   "model": "xgb",
+   "calibration": "sigmoid",
+   "auc": 0.7863095238095238,
+   "logloss": 0.5037403889273563,
+   "brier": 0.16646420720063215,
+   "ece": 0.040913805858545295,
+   "cost_at_theoretical": 0.56
+  },
+  {
+   "seed": 1,
+   "model": "majority",
+   "calibration": "raw",
+   "auc": 0.5,
+   "logloss": 0.6108643020548935,
+   "brier": 0.20999999999999996,
+   "ece": 5.551115123125783e-17,
+   "cost_at_theoretical": 0.7
+  },
+  {
+   "seed": 1,
+   "model": "logreg",
+   "calibration": "raw",
+   "auc": 0.8271428571428573,
+   "logloss": 0.4647987221584326,
+   "brier": 0.15114939867900914,
+   "ece": 0.0786122559285779,
+   "cost_at_theoretical": 0.485
+  },
+  {
+   "seed": 1,
+   "model": "logreg",
+   "calibration": "sigmoid",
+   "auc": 0.8284523809523809,
+   "logloss": 0.46521349123171996,
+   "brier": 0.15112909799202742,
+   "ece": 0.059225845981867364,
+   "cost_at_theoretical": 0.48
+  },
+  {
+   "seed": 1,
+   "model": "hgb",
+   "calibration": "raw",
+   "auc": 0.8320238095238095,
+   "logloss": 0.4608377132631,
+   "brier": 0.15055589122712512,
+   "ece": 0.07375747079746096,
+   "cost_at_theoretical": 0.475
+  },
+  {
+   "seed": 1,
+   "model": "hgb",
+   "calibration": "sigmoid",
+   "auc": 0.845952380952381,
+   "logloss": 0.45162506063776137,
+   "brier": 0.14593837922208366,
+   "ece": 0.08844261621660782,
+   "cost_at_theoretical": 0.435
+  },
+  {
+   "seed": 1,
+   "model": "xgb",
+   "calibration": "raw",
+   "auc": 0.8323809523809523,
+   "logloss": 0.4531223065134428,
+   "brier": 0.14818339374749967,
+   "ece": 0.07830143367871642,
+   "cost_at_theoretical": 0.47
+  },
+  {
+   "seed": 1,
+   "model": "xgb",
+   "calibration": "sigmoid",
+   "auc": 0.8378571428571429,
+   "logloss": 0.45866326817560477,
+   "brier": 0.14807530501019794,
+   "ece": 0.08094272129210783,
+   "cost_at_theoretical": 0.465
+  },
+  {
+   "seed": 2,
+   "model": "majority",
+   "calibration": "raw",
+   "auc": 0.5,
+   "logloss": 0.6108643020548935,
+   "brier": 0.21,
+   "ece": 5.551115123125783e-17,
+   "cost_at_theoretical": 0.7
+  },
+  {
+   "seed": 2,
+   "model": "logreg",
+   "calibration": "raw",
+   "auc": 0.7766666666666667,
+   "logloss": 0.5018842666590997,
+   "brier": 0.1669850653861846,
+   "ece": 0.06425171247828311,
+   "cost_at_theoretical": 0.52
+  },
+  {
+   "seed": 2,
+   "model": "logreg",
+   "calibration": "sigmoid",
+   "auc": 0.7734523809523809,
+   "logloss": 0.5039614409082207,
+   "brier": 0.16758605145391609,
+   "ece": 0.05581339481558126,
+   "cost_at_theoretical": 0.51
+  },
+  {
+   "seed": 2,
+   "model": "hgb",
+   "calibration": "raw",
+   "auc": 0.7808333333333334,
+   "logloss": 0.49882738304012386,
+   "brier": 0.1651226239388845,
+   "ece": 0.06668968856018949,
+   "cost_at_theoretical": 0.48
+  },
+  {
+   "seed": 2,
+   "model": "hgb",
+   "calibration": "sigmoid",
+   "auc": 0.7896428571428571,
+   "logloss": 0.49652135073993703,
+   "brier": 0.1637624966737362,
+   "ece": 0.04203765715575363,
+   "cost_at_theoretical": 0.555
+  },
+  {
+   "seed": 2,
+   "model": "xgb",
+   "calibration": "raw",
+   "auc": 0.7719047619047619,
+   "logloss": 0.5124612518971073,
+   "brier": 0.1693479495249162,
+   "ece": 0.034200490913353865,
+   "cost_at_theoretical": 0.54
+  },
+  {
+   "seed": 2,
+   "model": "xgb",
+   "calibration": "sigmoid",
+   "auc": 0.7802380952380953,
+   "logloss": 0.506574760534199,
+   "brier": 0.1672521757074387,
+   "ece": 0.06463158555673532,
+   "cost_at_theoretical": 0.555
+  },
+  {
+   "seed": 3,
+   "model": "majority",
+   "calibration": "raw",
+   "auc": 0.5,
+   "logloss": 0.6108643020548935,
+   "brier": 0.20999999999999996,
+   "ece": 5.551115123125783e-17,
+   "cost_at_theoretical": 0.7
+  },
+  {
+   "seed": 3,
+   "model": "logreg",
+   "calibration": "raw",
+   "auc": 0.7807142857142857,
+   "logloss": 0.5018123383336006,
+   "brier": 0.1682678856079555,
+   "ece": 0.05487307122373247,
+   "cost_at_theoretical": 0.545
+  },
+  {
+   "seed": 3,
+   "model": "logreg",
+   "calibration": "sigmoid",
+   "auc": 0.7799999999999999,
+   "logloss": 0.5020331717928882,
+   "brier": 0.1682413656430034,
+   "ece": 0.048716455836616684,
+   "cost_at_theoretical": 0.54
+  },
+  {
+   "seed": 3,
+   "model": "hgb",
+   "calibration": "raw",
+   "auc": 0.790595238095238,
+   "logloss": 0.4938003719205284,
+   "brier": 0.16416486260114083,
+   "ece": 0.03332414176834464,
+   "cost_at_theoretical": 0.565
+  },
+  {
+   "seed": 3,
+   "model": "hgb",
+   "calibration": "sigmoid",
+   "auc": 0.7885714285714285,
+   "logloss": 0.49501257775459706,
+   "brier": 0.1646983153678405,
+   "ece": 0.0504221001034095,
+   "cost_at_theoretical": 0.53
+  },
+  {
+   "seed": 3,
+   "model": "xgb",
+   "calibration": "raw",
+   "auc": 0.7879761904761906,
+   "logloss": 0.48961122388909706,
+   "brier": 0.16190756308699222,
+   "ece": 0.06577025389298796,
+   "cost_at_theoretical": 0.54
+  },
+  {
+   "seed": 3,
+   "model": "xgb",
+   "calibration": "sigmoid",
+   "auc": 0.7870238095238096,
+   "logloss": 0.4980332431233751,
+   "brier": 0.1638228128345689,
+   "ece": 0.05166224130137567,
+   "cost_at_theoretical": 0.56
+  },
+  {
+   "seed": 4,
+   "model": "majority",
+   "calibration": "raw",
+   "auc": 0.5,
+   "logloss": 0.6108643020548935,
+   "brier": 0.20999999999999996,
+   "ece": 5.551115123125783e-17,
+   "cost_at_theoretical": 0.7
+  },
+  {
+   "seed": 4,
+   "model": "logreg",
+   "calibration": "raw",
+   "auc": 0.7902380952380953,
+   "logloss": 0.4947820057294428,
+   "brier": 0.1636847581197668,
+   "ece": 0.07978613201274395,
+   "cost_at_theoretical": 0.545
+  },
+  {
+   "seed": 4,
+   "model": "logreg",
+   "calibration": "sigmoid",
+   "auc": 0.7923809523809525,
+   "logloss": 0.4941797761757805,
+   "brier": 0.1632579963271752,
+   "ece": 0.08627087248204945,
+   "cost_at_theoretical": 0.555
+  },
+  {
+   "seed": 4,
+   "model": "hgb",
+   "calibration": "raw",
+   "auc": 0.775952380952381,
+   "logloss": 0.5102878296711375,
+   "brier": 0.17038439100207448,
+   "ece": 0.04703479438010966,
+   "cost_at_theoretical": 0.595
+  },
+  {
+   "seed": 4,
+   "model": "hgb",
+   "calibration": "sigmoid",
+   "auc": 0.7989285714285714,
+   "logloss": 0.48662343966198857,
+   "brier": 0.16052388735105155,
+   "ece": 0.045967152144037904,
+   "cost_at_theoretical": 0.565
+  },
+  {
+   "seed": 4,
+   "model": "xgb",
+   "calibration": "raw",
+   "auc": 0.8057142857142857,
+   "logloss": 0.47688093774726165,
+   "brier": 0.1583094307207151,
+   "ece": 0.060627280892804274,
+   "cost_at_theoretical": 0.52
+  },
+  {
+   "seed": 4,
+   "model": "xgb",
+   "calibration": "sigmoid",
+   "auc": 0.8064285714285714,
+   "logloss": 0.4825244928098354,
+   "brier": 0.15859393192161195,
+   "ece": 0.09021929197114417,
+   "cost_at_theoretical": 0.55
+  }
+ ],
+ "aggregate": [
+  {
+   "model": "hgb",
+   "calibration": "raw",
+   "auc_mean": 0.7906666666666666,
+   "auc_std": 0.02399888980803361,
+   "logloss_mean": 0.4944265188483631,
+   "logloss_std": 0.019963896834005245,
+   "brier_mean": 0.1639518086986984,
+   "brier_std": 0.007958884366187611,
+   "ece_mean": 0.05409276404554018,
+   "ece_std": 0.016172533658665715,
+   "cost_at_theoretical_mean": 0.534,
+   "cost_at_theoretical_std": 0.053665631459994985
+  },
+  {
+   "model": "hgb",
+   "calibration": "sigmoid",
+   "auc_mean": 0.8013333333333333,
+   "auc_std": 0.025552206351567942,
+   "logloss_mean": 0.4855049335765166,
+   "logloss_std": 0.019433252669931705,
+   "brier_mean": 0.1600091046433497,
+   "brier_std": 0.008069591216448997,
+   "ece_mean": 0.05271644025142286,
+   "ece_std": 0.020599353302925925,
+   "cost_at_theoretical_mean": 0.522,
+   "cost_at_theoretical_std": 0.051429563482495166
+  },
+  {
+   "model": "logreg",
+   "calibration": "raw",
+   "auc_mean": 0.7913809523809524,
+   "auc_std": 0.020590351746243102,
+   "logloss_mean": 0.4922359074213382,
+   "logloss_std": 0.015622000001789135,
+   "brier_mean": 0.16294940112046014,
+   "brier_std": 0.006842504471443083,
+   "ece_mean": 0.06704694120658032,
+   "ece_std": 0.011610444882267342,
+   "cost_at_theoretical_mean": 0.532,
+   "cost_at_theoretical_std": 0.030740852297878766
+  },
+  {
+   "model": "logreg",
+   "calibration": "sigmoid",
+   "auc_mean": 0.791547619047619,
+   "auc_std": 0.021731163814338712,
+   "logloss_mean": 0.49258146160746563,
+   "logloss_std": 0.015770087806125602,
+   "brier_mean": 0.16291201220968002,
+   "brier_std": 0.006914847302833989,
+   "ece_mean": 0.05901308952646904,
+   "ece_std": 0.016237066252154386,
+   "cost_at_theoretical_mean": 0.531,
+   "cost_at_theoretical_std": 0.03612478373637689
+  },
+  {
+   "model": "majority",
+   "calibration": "raw",
+   "auc_mean": 0.5,
+   "auc_std": 0.0,
+   "logloss_mean": 0.6108643020548935,
+   "logloss_std": 0.0,
+   "brier_mean": 0.20999999999999996,
+   "brier_std": 1.3877787807814457e-17,
+   "ece_mean": 5.551115123125783e-17,
+   "ece_std": 0.0,
+   "cost_at_theoretical_mean": 0.7,
+   "cost_at_theoretical_std": 0.0
+  },
+  {
+   "model": "xgb",
+   "calibration": "raw",
+   "auc_mean": 0.7968095238095239,
+   "auc_std": 0.023228231464350668,
+   "logloss_mean": 0.486440018898298,
+   "logloss_std": 0.022780850980599423,
+   "brier_mean": 0.16087209770788524,
+   "brier_std": 0.008267873667488485,
+   "ece_mean": 0.05978565233573317,
+   "ece_std": 0.016078071713385444,
+   "cost_at_theoretical_mean": 0.524,
+   "cost_at_theoretical_std": 0.03209361307176246
+  },
+  {
+   "model": "xgb",
+   "calibration": "sigmoid",
+   "auc_mean": 0.7995714285714286,
+   "auc_std": 0.02355798678785176,
+   "logloss_mean": 0.48990723071407416,
+   "logloss_std": 0.019785631833495503,
+   "brier_mean": 0.16084168653488992,
+   "brier_std": 0.007899796233419729,
+   "ece_mean": 0.06567392919598165,
+   "ece_std": 0.02028600768659426,
+   "cost_at_theoretical_mean": 0.538,
+   "cost_at_theoretical_std": 0.04101828860398739
+  }
+ ],
+ "seconds": 306.7
+}

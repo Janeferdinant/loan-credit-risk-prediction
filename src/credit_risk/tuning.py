@@ -9,8 +9,8 @@ import numpy as np
 import optuna
 import pandas as pd
 from joblib import Parallel, delayed
-from threadpoolctl import threadpool_limits
 from sklearn.model_selection import StratifiedKFold
+from threadpoolctl import threadpool_limits
 
 from credit_risk import metrics
 from credit_risk.models import calibrations_for, make_estimator, suggest_params

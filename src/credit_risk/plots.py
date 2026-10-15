@@ -89,14 +89,13 @@ def cost_vs_threshold(
     ax.plot(grid, oof_cost, color=ORANGE, label="out-of-fold (train rows)")
     ax.plot(grid, test_cost, color=BLUE, label="test split")
     for (name, t), colour in zip(marks.items(), [GREEN, VERMILION, PURPLE], strict=False):
-        ax.axvline(t, color=colour, ls="--", lw=1)
-        ax.text(t, ax.get_ylim()[1], f" {name}\n {t:.2f}", va="top", fontsize=7, color=colour)
+        ax.axvline(t, color=colour, ls="--", lw=1, label=f"{name} ({t:.3f})")
     for name, c in baselines.items():
         ax.axhline(c, color=GREY, ls=":", lw=1)
         ax.text(0.99, c, name, ha="right", va="bottom", fontsize=7, color=GREY)
     ax.set_xlabel("approve if P(bad) < threshold")
     ax.set_ylabel("mean cost per applicant")
-    ax.legend(frameon=False, loc="center right", fontsize=8)
+    ax.legend(frameon=False, loc="center right", fontsize=7)
     _save(fig, path)
 
 
@@ -159,5 +158,9 @@ def fairness_bars(groups: dict[str, pd.DataFrame], path: Path) -> None:
         ax.set_xticklabels([f"{g}\n(n={n})" for g, n in zip(rep["group"], rep["n"], strict=True)], fontsize=8)
         ax.set_title(attr, fontsize=9)
         ax.set_ylim(0, 1)
-    np.atleast_1d(axes)[0].legend(frameon=False, fontsize=7, loc="lower left")
-    _save(fig, path)
+    handles, labels = np.atleast_1d(axes)[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=3, frameon=False, fontsize=8)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
