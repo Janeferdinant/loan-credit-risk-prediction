@@ -9,6 +9,7 @@ import numpy as np
 import optuna
 import pandas as pd
 from joblib import Parallel, delayed
+from threadpoolctl import threadpool_limits
 from sklearn.model_selection import StratifiedKFold
 
 from credit_risk import metrics
@@ -121,6 +122,12 @@ def _outer_fold(
     return {"repeat": repeat, "te": te, "preds": preds, "records": records, "params": param_records}
 
 
+def _outer_fold_limited(*args: Any) -> dict[str, Any]:
+    """One outer fold with BLAS/OpenMP limited to one thread, so parallel folds do not oversubscribe."""
+    with threadpool_limits(limits=1):
+        return _outer_fold(*args)
+
+
 def nested_cv(
     X: pd.DataFrame,
     y: np.ndarray,
@@ -142,7 +149,7 @@ def nested_cv(
     y = np.asarray(y)
     folds = outer_folds(y, n_splits, n_repeats, seed)
     jobs = [
-        delayed(_outer_fold)(
+        delayed(_outer_fold_limited)(
             r,
             k % n_splits,
             tr,
@@ -158,7 +165,7 @@ def nested_cv(
         )
         for k, (r, tr, te) in enumerate(folds)
     ]
-    results = Parallel(n_jobs=n_jobs)(jobs)
+    results = Parallel(n_jobs=n_jobs, verbose=5)(jobs)
     oof: dict[tuple[str, str], np.ndarray] = {}
     out = NestedCVResult(oof=oof, n_repeats=n_repeats)
     for res in results:

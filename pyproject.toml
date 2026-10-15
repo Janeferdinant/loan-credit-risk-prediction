@@ -43,3 +43,4 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "C4"]
+ignore = ["E501"]  # line length is enforced by ruff format; long strings and data tables are allowed

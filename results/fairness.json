@@ -1,0 +1,266 @@
+{
+ "threshold": 0.14,
+ "model": "xgb|raw",
+ "pooled_out_of_fold_train_rows": {
+  "sex": {
+   "group": "female",
+   "reference": "male",
+   "table": [
+    {
+     "group": "male",
+     "n": 551,
+     "bad_rate": 0.27404718693284935,
+     "approval_rate": 0.32123411978221417,
+     "approve_good_rate": 0.4125,
+     "approve_bad_rate": 0.07947019867549669,
+     "auc": 0.7974751655629139,
+     "mean_pred_bad": 0.2756640762250453
+    },
+    {
+     "group": "female",
+     "n": 249,
+     "bad_rate": 0.357429718875502,
+     "approval_rate": 0.24096385542168675,
+     "approve_good_rate": 0.35,
+     "approve_bad_rate": 0.0449438202247191,
+     "auc": 0.7665028089887641,
+     "mean_pred_bad": 0.33372122489959843
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": -0.08027026436052742,
+     "lo": -0.14557631615390784,
+     "hi": -0.011341190533458723
+    },
+    "approve_good_rate_gap": {
+     "est": -0.0625,
+     "lo": -0.15173318730279103,
+     "hi": 0.024993282703535565
+    },
+    "approve_bad_rate_gap": {
+     "est": -0.03452637845077759,
+     "lo": -0.09409049205806726,
+     "hi": 0.02687927960581093
+    }
+   }
+  },
+  "age_group": {
+   "group": "<25",
+   "reference": ">=25",
+   "table": [
+    {
+     "group": ">=25",
+     "n": 690,
+     "bad_rate": 0.28695652173913044,
+     "approval_rate": 0.32318840579710145,
+     "approve_good_rate": 0.42073170731707316,
+     "approve_bad_rate": 0.08080808080808081,
+     "auc": 0.8009310585530098,
+     "mean_pred_bad": 0.2805835463768116
+    },
+    {
+     "group": "<25",
+     "n": 110,
+     "bad_rate": 0.38181818181818183,
+     "approval_rate": 0.12727272727272726,
+     "approve_good_rate": 0.20588235294117646,
+     "approve_bad_rate": 0.0,
+     "auc": 0.6967787114845938,
+     "mean_pred_bad": 0.3762258545454546
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": -0.1959156785243742,
+     "lo": -0.26600790513833994,
+     "hi": -0.12108036890645585
+    },
+    "approve_good_rate_gap": {
+     "est": -0.2148493543758967,
+     "lo": -0.3158971654139528,
+     "hi": -0.1054545167103436
+    },
+    "approve_bad_rate_gap": {
+     "est": -0.08080808080808081,
+     "lo": -0.11956521739130435,
+     "hi": -0.04544883508451351
+    }
+   }
+  },
+  "foreign_worker": {
+   "group": "no",
+   "reference": "yes",
+   "table": [
+    {
+     "group": "yes",
+     "n": 769,
+     "bad_rate": 0.3081924577373212,
+     "approval_rate": 0.2847854356306892,
+     "approve_good_rate": 0.3815789473684211,
+     "approve_bad_rate": 0.06751054852320675,
+     "auc": 0.78743932616351,
+     "mean_pred_bad": 0.29734722236671
+    },
+    {
+     "group": "no",
+     "n": 31,
+     "bad_rate": 0.0967741935483871,
+     "approval_rate": 0.5806451612903226,
+     "approve_good_rate": 0.6428571428571429,
+     "approve_bad_rate": 0.0,
+     "auc": 0.8214285714285714,
+     "mean_pred_bad": 0.20411216129032256
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": 0.2958597256596334,
+     "lo": 0.11760560426192378,
+     "hi": 0.4766558999958052
+    },
+    "approve_good_rate_gap": {
+     "est": 0.26127819548872183,
+     "lo": 0.07175078703000944,
+     "hi": 0.43334656084656087
+    },
+    "approve_bad_rate_gap": {
+     "est": -0.06751054852320675,
+     "lo": -0.10073310711742281,
+     "hi": -0.037815126050420166
+    }
+   }
+  }
+ },
+ "test_split": {
+  "sex": {
+   "group": "female",
+   "reference": "male",
+   "table": [
+    {
+     "group": "female",
+     "n": 61,
+     "bad_rate": 0.32786885245901637,
+     "approval_rate": 0.19672131147540983,
+     "approve_good_rate": 0.2682926829268293,
+     "approve_bad_rate": 0.05,
+     "auc": 0.7573170731707316,
+     "mean_pred_bad": 0.33096545934677124
+    },
+    {
+     "group": "male",
+     "n": 139,
+     "bad_rate": 0.28776978417266186,
+     "approval_rate": 0.302158273381295,
+     "approve_good_rate": 0.40404040404040403,
+     "approve_bad_rate": 0.05,
+     "auc": 0.7934343434343435,
+     "mean_pred_bad": 0.29385724663734436
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": -0.10543696190588514,
+     "lo": -0.2305696426465385,
+     "hi": 0.019695718834768228
+    },
+    "approve_good_rate_gap": {
+     "est": -0.13574772111357475,
+     "lo": -0.30437955515275106,
+     "hi": 0.02579011727688787
+    },
+    "approve_bad_rate_gap": {
+     "est": 0.0,
+     "lo": -0.1111111111111111,
+     "hi": 0.13333333333333333
+    }
+   }
+  },
+  "age_group": {
+   "group": "<25",
+   "reference": ">=25",
+   "table": [
+    {
+     "group": "<25",
+     "n": 39,
+     "bad_rate": 0.48717948717948717,
+     "approval_rate": 0.1282051282051282,
+     "approve_good_rate": 0.2,
+     "approve_bad_rate": 0.05263157894736842,
+     "auc": 0.7052631578947368,
+     "mean_pred_bad": 0.378120094537735
+    },
+    {
+     "group": ">=25",
+     "n": 161,
+     "bad_rate": 0.2546583850931677,
+     "approval_rate": 0.30434782608695654,
+     "approve_good_rate": 0.39166666666666666,
+     "approve_bad_rate": 0.04878048780487805,
+     "auc": 0.7939024390243903,
+     "mean_pred_bad": 0.2875053584575653
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": -0.17614269788182835,
+     "lo": -0.2903527631788501,
+     "hi": -0.04871396719222813
+    },
+    "approve_good_rate_gap": {
+     "est": -0.19166666666666665,
+     "lo": -0.3684412955465587,
+     "hi": 0.014048022095508995
+    },
+    "approve_bad_rate_gap": {
+     "est": 0.0038510911424903677,
+     "lo": -0.1111111111111111,
+     "hi": 0.13333333333333333
+    }
+   }
+  },
+  "foreign_worker": {
+   "group": "no",
+   "reference": "yes",
+   "table": [
+    {
+     "group": "yes",
+     "n": 194,
+     "bad_rate": 0.30412371134020616,
+     "approval_rate": 0.26288659793814434,
+     "approve_good_rate": 0.35555555555555557,
+     "approve_bad_rate": 0.05084745762711865,
+     "auc": 0.7741368487131199,
+     "mean_pred_bad": 0.30771583318710327
+    },
+    {
+     "group": "no",
+     "n": 6,
+     "bad_rate": 0.16666666666666666,
+     "approval_rate": 0.5,
+     "approve_good_rate": 0.6,
+     "approve_bad_rate": 0.0,
+     "auc": 1.0,
+     "mean_pred_bad": 0.22302794456481934
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": 0.23711340206185566,
+     "lo": -0.12212199312714775,
+     "hi": 0.6065292096219932
+    },
+    "approve_good_rate_gap": {
+     "est": 0.2444444444444444,
+     "lo": -0.17919799498746866,
+     "hi": 0.6667293233082704
+    },
+    "approve_bad_rate_gap": {
+     "est": -0.05084745762711865,
+     "lo": -0.11475409836065574,
+     "hi": 0.0
+    }
+   }
+  }
+ }
+}

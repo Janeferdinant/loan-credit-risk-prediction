@@ -1,0 +1,143 @@
+{
+ "model": "xgb|raw",
+ "features_dropped": [
+  "personal_status",
+  "age",
+  "foreign_worker"
+ ],
+ "auc_oof_all_features": 0.7826959325396826,
+ "auc_oof_no_sensitive": 0.7869146825396826,
+ "cost_oof_all_features": 0.52375,
+ "cost_oof_no_sensitive": 0.54375,
+ "fairness_no_sensitive": {
+  "sex": {
+   "group": "female",
+   "reference": "male",
+   "table": [
+    {
+     "group": "male",
+     "n": 551,
+     "bad_rate": 0.27404718693284935,
+     "approval_rate": 0.3139745916515426,
+     "approve_good_rate": 0.4075,
+     "approve_bad_rate": 0.06622516556291391,
+     "auc": 0.8034271523178809,
+     "mean_pred_bad": 0.2849748268716727
+    },
+    {
+     "group": "female",
+     "n": 249,
+     "bad_rate": 0.357429718875502,
+     "approval_rate": 0.2891566265060241,
+     "approve_good_rate": 0.3875,
+     "approve_bad_rate": 0.11235955056179775,
+     "auc": 0.7717696629213483,
+     "mean_pred_bad": 0.30932195199631063
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": -0.02481796514551854,
+     "lo": -0.09363042004679334,
+     "hi": 0.0451563058039781
+    },
+    "approve_good_rate_gap": {
+     "est": -0.019999999999999962,
+     "lo": -0.11150732713249839,
+     "hi": 0.06929223177628169
+    },
+    "approve_bad_rate_gap": {
+     "est": 0.04613438499888384,
+     "lo": -0.03131211827789735,
+     "hi": 0.12248784806350571
+    }
+   }
+  },
+  "age_group": {
+   "group": "<25",
+   "reference": ">=25",
+   "table": [
+    {
+     "group": ">=25",
+     "n": 690,
+     "bad_rate": 0.28695652173913044,
+     "approval_rate": 0.32608695652173914,
+     "approve_good_rate": 0.42276422764227645,
+     "approve_bad_rate": 0.08585858585858586,
+     "auc": 0.8049088445429908,
+     "mean_pred_bad": 0.2825456010105745
+    },
+    {
+     "group": "<25",
+     "n": 110,
+     "bad_rate": 0.38181818181818183,
+     "approval_rate": 0.18181818181818182,
+     "approve_good_rate": 0.25,
+     "approve_bad_rate": 0.07142857142857142,
+     "auc": 0.6960784313725491,
+     "mean_pred_bad": 0.3553257359643326
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": -0.1442687747035573,
+     "lo": -0.22214097496706195,
+     "hi": -0.05928524374176552
+    },
+    "approve_good_rate_gap": {
+     "est": -0.17276422764227645,
+     "lo": -0.2846739429341321,
+     "hi": -0.05809548989049418
+    },
+    "approve_bad_rate_gap": {
+     "est": -0.014430014430014432,
+     "lo": -0.09353888106966925,
+     "hi": 0.0797835577553807
+    }
+   }
+  },
+  "foreign_worker": {
+   "group": "no",
+   "reference": "yes",
+   "table": [
+    {
+     "group": "yes",
+     "n": 769,
+     "bad_rate": 0.3081924577373212,
+     "approval_rate": 0.2964889466840052,
+     "approve_good_rate": 0.39097744360902253,
+     "approve_bad_rate": 0.08438818565400844,
+     "auc": 0.7906316423971321,
+     "mean_pred_bad": 0.2956938676360073
+    },
+    {
+     "group": "no",
+     "n": 31,
+     "bad_rate": 0.0967741935483871,
+     "approval_rate": 0.5483870967741935,
+     "approve_good_rate": 0.6071428571428571,
+     "approve_bad_rate": 0.0,
+     "auc": 0.8571428571428571,
+     "mean_pred_bad": 0.21463585294462664
+    }
+   ],
+   "gaps": {
+    "approval_rate_gap": {
+     "est": 0.2518981500901883,
+     "lo": 0.08020470657326229,
+     "hi": 0.434027224296321
+    },
+    "approve_good_rate_gap": {
+     "est": 0.21616541353383456,
+     "lo": 0.032317755238858055,
+     "hi": 0.39767466805348944
+    },
+    "approve_bad_rate_gap": {
+     "est": -0.08438818565400844,
+     "lo": -0.12237768469833347,
+     "hi": -0.05172413793103448
+    }
+   }
+  }
+ }
+}
