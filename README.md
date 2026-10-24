@@ -10,11 +10,11 @@
 | **Question** | Can gradient boosting beat a well-preprocessed logistic regression at predicting bad credit on a small, public credit set, and how should the probabilities be turned into approve/reject decisions when a false approval costs 5 times a false rejection? |
 | **Data** | Statlog German Credit (1,000 applications, 20 attributes, 30% bad), UCI, CC BY 4.0, downloaded at run time with a pinned SHA-256 |
 | **Protocol** | Stratified 800/200 train/test split (seed 42). Nested CV on the 800 training rows (3 repeats x 5 outer folds; Optuna with 20 trials on 3 inner folds). The model is picked by nested-CV log loss, never by the test split. 2,000-resample bootstrap intervals on the test split. |
-| **Discrimination** | Test AUC: logistic regression 0.798, HistGradientBoosting 0.797, XGBoost 0.783, majority class 0.500. **No model beats logistic regression reliably**: every paired AUC difference has an interval that contains 0. |
-| **Calibration** | Test ECE is between 0.04 and 0.08 for every non-baseline model. Sigmoid calibration helps a little (intervals overlap); isotonic calibration does not help at n = 800. |
-| **Decision cost** | With the cost matrix, the chosen XGBoost model approves when P(bad) < 0.14 and costs 0.520 [0.435, 0.630] per applicant on the test split, against 0.700 for rejecting everyone, 1.500 for approving everyone and 0.995 at the default 0.5 threshold. |
-| **Fairness** | Out-of-fold, the model approves applicants under 25 far less often than older ones (gap -0.196 in approval rate, 95% interval [-0.266, -0.121]), and dropping the `age` column (with `personal_status` and `foreign_worker`) narrows it only partly. Group sizes are small; see the caveats below. |
-| **Leakage checks** | Pipelines are fitted inside each training fold (tested). Running the whole nested procedure on permuted labels gives AUC 0.466 (logistic regression) and 0.479 (HistGradientBoosting). |
+| **Discrimination** | Test AUC: logistic regression 0.798, HistGradientBoosting 0.797, XGBoost 0.783, majority class 0.500. **No model beats logistic regression reliably**: every paired AUC difference has an interval that contains 0. **Status:** Verified (run 2026-10-15, seed 42). |
+| **Calibration** | Test ECE is between 0.04 and 0.08 for every non-baseline model. Sigmoid calibration helps a little (intervals overlap); isotonic calibration does not help at n = 800. **Status:** Verified (run 2026-10-15, seed 42). |
+| **Decision cost** | With the cost matrix, the chosen XGBoost model approves when P(bad) < 0.14 and costs 0.520 [0.435, 0.630] per applicant on the test split, against 0.700 for rejecting everyone, 1.500 for approving everyone and 0.995 at the default 0.5 threshold. **Status:** Verified (run 2026-10-15, seed 42). |
+| **Fairness** | Out-of-fold, the model approves applicants under 25 far less often than older ones (gap -0.196 in approval rate, 95% interval [-0.266, -0.121]), and dropping the `age` column (with `personal_status` and `foreign_worker`) narrows it only partly. Group sizes are small; see the caveats below. **Status:** Verified (run 2026-10-15, seed 42). |
+| **Leakage checks** | Pipelines are fitted inside each training fold (tested). Running the whole nested procedure on permuted labels gives AUC 0.466 (logistic regression) and 0.479 (HistGradientBoosting). **Status:** Verified (run 2026-10-15, seed 42). |
 | **Explorer** | `docs/index.html`: model comparison, SHAP importance and a threshold/cost slider, all precomputed |
 
 **Not for real lending decisions.** This is a methodology study on 1,000 records from 1994.
@@ -71,7 +71,7 @@ flowchart LR
 
 ## Results
 
-All numbers come from `docs/runs/2026-10-15-main-run.md` (seed 42, run on 2026-10-15) and `results/*.json`.
+All numbers come from `docs/runs/2026-10-15-main-run.md` (seed 42, run on 2026-10-15) and `results/*.json`. Status: Verified (run 2026-10-15, seed 42), except the seed sweep, which is Verified (run 2026-10-15, seeds 0, 1, 2, 3, 4).
 
 ### Test split, 200 applicants (95% bootstrap intervals)
 
@@ -178,7 +178,7 @@ What this does and does not show:
 
 ### Seed sweep
 
-Tuning and evaluation repeated for hold-out seeds [0, 1, 2, 3, 4] (20 trials per model); mean (sd) over seeds on each seed's own 200-row test split.
+Tuning and evaluation repeated for hold-out seeds [0, 1, 2, 3, 4] (20 trials per model); mean (sd) over seeds on each seed's own 200-row test split. Status: Verified (run 2026-10-15, seeds 0, 1, 2, 3, 4).
 
 | Model | calibration | AUC | log loss | Brier | ECE | cost at 1/6 |
 |---|---|---|---|---|---|---|
