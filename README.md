@@ -134,6 +134,19 @@ Isotonic calibration needs more data than 800 rows give it: its log loss is wors
 
 ![Partial dependence](docs/img/partial_dependence.png)
 
+#### LIME beside SHAP comparison
+
+While TreeSHAP computes exact, deterministic Shapley attributions directly from ensemble tree structures, LIME constructs local surrogate linear models by sampling perturbations around each applicant. We evaluated both methods across 50 test applicants:
+
+| Metric | TreeSHAP | LIME (1,000 samples) | Notes |
+|---|---|---|---|
+| **Runtime per applicant** | **0.15 ms** | 44.0 ms | TreeSHAP is ~300x faster by evaluating tree paths directly without perturbation sampling |
+| **Explanation stability** | **1.000** (exact) | 0.581 (Kendall $\tau$) | Kendall rank correlation across 10 random seeds; LIME exhibits sampling variance across seeds |
+| **Top-5 feature agreement** | — | **0.406** (Jaccard) | 40.6% mean Jaccard overlap of top-5 features with SHAP; both highlight checking status, duration, and credit amount |
+| **Output scale** | Log-odds of bad | Probability delta | Summed over one-hot levels to source feature owners |
+
+Functions for local explanation (`lime_explain_applicant`), seed stability (`lime_stability_kendall_tau`), feature rank agreement (`shap_lime_jaccard_agreement`), and runtime benchmarking (`measure_explanation_runtime`) are provided in `src/credit_risk/explain.py`.
+
 ### Fairness check
 
 Operating threshold 0.140, model `xgb|raw`. Pooled out-of-fold predictions on the 800 training rows; every row is scored by models that never saw it.
