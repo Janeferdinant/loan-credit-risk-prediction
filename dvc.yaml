@@ -1,0 +1,49 @@
+stages:
+  prepare:
+    cmd: python src/credit_risk/dvc_stages.py prepare
+    deps:
+      - src/credit_risk/data.py
+      - src/credit_risk/dvc_stages.py
+    params:
+      - prepare.seed
+      - prepare.test_size
+    outs:
+      - results/prepared.csv
+
+  train:
+    cmd: python src/credit_risk/dvc_stages.py train
+    deps:
+      - results/prepared.csv
+      - src/credit_risk/dvc_stages.py
+      - src/credit_risk/models.py
+      - src/credit_risk/preprocess.py
+      - src/credit_risk/splits.py
+    params:
+      - prepare.seed
+      - prepare.test_size
+      - train.colsample_bytree
+      - train.learning_rate
+      - train.max_depth
+      - train.model_name
+      - train.n_estimators
+      - train.seed
+      - train.subsample
+    outs:
+      - results/model.joblib
+
+  evaluate:
+    cmd: python src/credit_risk/dvc_stages.py evaluate
+    deps:
+      - results/model.joblib
+      - results/prepared.csv
+      - src/credit_risk/dvc_stages.py
+      - src/credit_risk/metrics.py
+    params:
+      - evaluate.cost_false_approval
+      - evaluate.cost_false_rejection
+      - evaluate.operating_threshold
+      - prepare.seed
+      - prepare.test_size
+    metrics:
+      - results/metrics.json:
+          cache: false
