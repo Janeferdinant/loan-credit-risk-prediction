@@ -19,3 +19,5 @@ jobs:
       - run: python -m ruff format --check .
       # Fast tests only. The long experiments (train/evaluate/sweep) are never run in CI.
       - run: python -m pytest -m "not slow"
+      - run: dvc dag
+      - run: dvc status

@@ -1,0 +1,10 @@
+{
+  "auc": 0.7919,
+  "pr_auc": 0.6403,
+  "logloss": 0.4923,
+  "brier": 0.162,
+  "cost_at_operating_threshold": 0.555,
+  "cost_at_theoretical_threshold": 0.555,
+  "approval_rate_operating": 0.295,
+  "n_test": 200
+}

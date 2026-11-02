@@ -196,6 +196,44 @@ See `docs/runs/` for the dated log.
 
 Python 3.11, scikit-learn 1.9, XGBoost 3.2, Optuna 5.0, SHAP 0.51, pandas 3.0, matplotlib, pytest, ruff. Exact versions are pinned in `requirements.txt`.
 
+## Reproducible DVC pipeline
+
+The workflow includes a 3-stage reproducible DVC pipeline (`prepare` -> `train` -> `evaluate`) driven by hyperparameters and configuration in `params.yaml`:
+
+```bash
+# Inspect pipeline DAG
+dvc dag
+
+# Reproduce pipeline end-to-end
+dvc repro
+
+# Compare and inspect metrics
+dvc metrics show
+```
+
+The pipeline stages:
+1. **`prepare`**: Validates raw UCI dataset checksums, parses loan features, and attaches derived sensitive demographics -> `results/prepared.csv`.
+2. **`train`**: Fits preprocessing pipelines and the XGBoost classifier using parameters from `params.yaml` -> `results/model.joblib`.
+3. **`evaluate`**: Evaluates holdout test metrics (AUC, PR-AUC, log loss, Brier score) and expected decision costs under both theoretical ($1/6$) and operating ($0.14$) thresholds -> `results/metrics.json`.
+
+```
+        +---------+      
+        | prepare |      
+        +---------+      
+         *         **    
+       **            *   
+      *               ** 
++-------+               *
+| train |             ** 
++-------+            *   
+         *         **    
+          **     **      
+            *   *        
+        +----------+     
+        | evaluate |     
+        +----------+     
+```
+
 ## Getting started
 
 Prerequisites: Python 3.11 and git. No GPU.

@@ -1,0 +1,92 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/credit_risk/dvc_stages.py prepare
+    deps:
+    - path: src/credit_risk/data.py
+      hash: md5
+      md5: 35ab10077f8f320a22310623e55316fd
+      size: 8213
+    - path: src/credit_risk/dvc_stages.py
+      hash: md5
+      md5: 0b2ae3afceb509eb4ab73bf5c9dd8927
+      size: 6080
+    params:
+      params.yaml:
+        prepare.seed: 42
+        prepare.test_size: 0.2
+    outs:
+    - path: results/prepared.csv
+      hash: md5
+      md5: c8b14baf7aede592e6e0de8c387f9d2e
+      size: 215326
+  train:
+    cmd: python src/credit_risk/dvc_stages.py train
+    deps:
+    - path: results/prepared.csv
+      hash: md5
+      md5: c8b14baf7aede592e6e0de8c387f9d2e
+      size: 215326
+    - path: src/credit_risk/dvc_stages.py
+      hash: md5
+      md5: 0b2ae3afceb509eb4ab73bf5c9dd8927
+      size: 6080
+    - path: src/credit_risk/models.py
+      hash: md5
+      md5: ef3affa19f54270c03b13a9782478a84
+      size: 5084
+    - path: src/credit_risk/preprocess.py
+      hash: md5
+      md5: e24779854f00950e63713f09a0a9da1c
+      size: 2947
+    - path: src/credit_risk/splits.py
+      hash: md5
+      md5: e5c01d2c3096d7652b810bec40cbb4bb
+      size: 934
+    params:
+      params.yaml:
+        prepare.seed: 42
+        prepare.test_size: 0.2
+        train.colsample_bytree: 0.8
+        train.learning_rate: 0.05
+        train.max_depth: 3
+        train.model_name: xgb
+        train.n_estimators: 100
+        train.seed: 42
+        train.subsample: 0.8
+    outs:
+    - path: results/model.joblib
+      hash: md5
+      md5: fddb86a429c1fa9d3e9641a210509162
+      size: 120114
+  evaluate:
+    cmd: python src/credit_risk/dvc_stages.py evaluate
+    deps:
+    - path: results/model.joblib
+      hash: md5
+      md5: fddb86a429c1fa9d3e9641a210509162
+      size: 120114
+    - path: results/prepared.csv
+      hash: md5
+      md5: c8b14baf7aede592e6e0de8c387f9d2e
+      size: 215326
+    - path: src/credit_risk/dvc_stages.py
+      hash: md5
+      md5: 0b2ae3afceb509eb4ab73bf5c9dd8927
+      size: 6080
+    - path: src/credit_risk/metrics.py
+      hash: md5
+      md5: 192acd4a1463125ec95d12966421d92f
+      size: 6538
+    params:
+      params.yaml:
+        evaluate.cost_false_approval: 5.0
+        evaluate.cost_false_rejection: 1.0
+        evaluate.operating_threshold: 0.14
+        prepare.seed: 42
+        prepare.test_size: 0.2
+    outs:
+    - path: results/metrics.json
+      hash: md5
+      md5: 2e8885bdf4959de06e47742e1aad081d
+      size: 222
